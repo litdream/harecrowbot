@@ -6,4 +6,8 @@ class Hello:
         self.hito = ctx.message.author
         
     def hello(self):
-        return "Hello, {}".format(self.hito)
+        greetuser = self.hito
+        if greetuser.find('#') > -1:
+            greetuser = greetuser.split('#')[0]
+        return "Hello, {}.".format(greetuser)
+            
