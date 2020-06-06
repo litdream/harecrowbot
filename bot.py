@@ -5,6 +5,7 @@ from discord.ext import commands
 homedir = os.environ['HOME']
 load_dotenv( dotenv_path=os.path.join(homedir,".harecrowbot/env") )
 TOKEN = os.getenv('DISCORD_TOKEN')
+OWMID = os.getenv('OPENWM_TOKEN')
 
 bot = commands.Bot(command_prefix=':')
 
@@ -23,5 +24,18 @@ async def say_hello(ctx):
     import bot_hello
     h = bot_hello.Hello(ctx)
     await ctx.send(h.hello())
+
+@bot.command(name="weather", help="weather service")
+async def say_hello(ctx, *args):
+    import bot_weather
+    if len(args) == 0:
+        rtn = '''\
+USAGE
+:weather (zip code | city name)
+'''
+    else:
+        w = bot_weather.Weather(ctx, OWMID)
+        rtn = w.getWeather(*args)
+    await ctx.send(rtn)
     
 bot.run(TOKEN)    
