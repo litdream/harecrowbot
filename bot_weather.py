@@ -1,37 +1,15 @@
 import requests
 import re
 from pprint import pprint
+import time
 
 '''
 Weather service return sample:
 
-{'base': 'stations',
- 'clouds': {'all': 90},
- 'cod': 200,
- 'coord': {'lat': 40.71, 'lon': -74.01},
- 'dt': 1591446956,
- 'id': 5128581,
- 'main': {'feels_like': 299.19,
-          'humidity': 94,
-          'pressure': 1009,
-          'temp': 296.03,
-          'temp_max': 297.04,
-          'temp_min': 294.82},
- 'name': 'New York',
- 'sys': {'country': 'US',
-         'id': 4610,
-         'sunrise': 1591435523,
-         'sunset': 1591489473,
-         'type': 1},
- 'timezone': -14400,
- 'visibility': 12874,
- 'weather': [{'description': 'overcast clouds',
-              'icon': '04d',
-              'id': 804,
-              'main': 'Clouds'}],
- 'wind': {'deg': 250, 'speed': 2.1}}
+sample output current-weather: https://openweathermap.org/api/one-call-api
+sample output onecall: https://openweathermap.org/api/one-call-api
 
-
+TEST:
 import bot_weather
 import pprint
 import requests
@@ -41,32 +19,78 @@ rtn = requests.get(url).json()
 pprint.pprint(rtn)
 
 '''
+
+class CurData:
+    def __init__(self, json):
+        self.name = json['name']
+        self.wDescr = json['weather'][0]['description']
+        self.temp = json['main']['temp']
+        self.windSpeed = json['wind']['speed']
+        self.lat = json['coord']['lat']
+        self.lon = json['coord']['lon']
+        
+class ForecastData:
+    def __init__(self, json):
+        dt = json['daily'][0]
+        self.sunrise = dt['sunrise']
+        self.sunset = dt['sunset']
+        self.max = dt['temp']['max']
+        self.min = dt['temp']['min']
+        self.humidity = dt['humidity']
+        self.lat = json['lat']
+        self.lon = json['lon']
+
+        # TODO: support
+        #   self.chanceRain = dt['rain']
+        
 class Weather:
     def __init__(self, ctx, apikey):
         self.ctx = ctx
         self.apikey = apikey
         self.baseurl = "http://api.openweathermap.org/data/2.5/weather?" + "appid=" + self.apikey + "&units=imperial"
-        self.dailyurl = "http://api.openweathermap.org/data/2.5/forecast/daily?" + "appid=" + self.apikey + "&units=imperial"
-        
+
+        now =  int(time.time())
+        dt = now - now%86400
+        #self.onecallBase = "https://api.openweathermap.org/data/2.5/onecall/timemachine?" + "appid=" + self.apikey + "&units=imperial" + "&dt={}".format(dt)
+        self.onecallBase = "https://api.openweathermap.org/data/2.5/onecall?" + "appid=" + self.apikey + "&units=imperial" + "&dt={}".format(dt)
+
     def getWeather(self, *args):
         if len(args) == 0:
             return "need param"
-        loc = self.interpreteLocation(args[0])
-        url =  self.baseurl + "&" + loc
-        data = requests.get(url).json()   # weather-data
-        pprint(data)    # for debug
-        
         # TODO:
         #   1. set wind direction
         #   2. temperature forecast.
         #
-        rtn = 'city:{} {}  {}F wind-speed({})'.format( data['name'], data['weather'][0]['description'],  data['main']['temp'], data['wind']['speed'] )
+        cur = self.currentWeather(*args)
+        fore = self.owmOneCall(*args)
+        rtn = 'city:{} {}  {}F(min: {}F, max: {}F)  wind-speed({})'.format( cur.name, cur.wDescr, cur.temp, fore.min, fore.max, cur.windSpeed)
         return rtn
     
     def interpreteLocation(self, loc):
         loc = loc.strip()
-        pZip = re.compile('^\d{5}$')
+        pZip = re.compile('^[0-9]{5}$')
         if pZip.match(loc):
             return 'zip={}'.format(loc)
         else:
             return 'q={}'.format(loc)
+
+    def currentWeather(self, *args):
+        loc = self.interpreteLocation(args[0])
+        url =  self.baseurl + "&" + loc
+        data = requests.get(url).json()   # weather-data
+        self.curDataCache = CurData(data)
+        return self.curDataCache
+        
+    def owmOneCall(self, *args):
+        url = self.onecallBase + '&exclude=minutely,hourly&' + 'lat={}&lon={}'.format(self.curDataCache.lat, self.curDataCache.lon)
+        data = requests.get(url).json()   # weather-data
+
+        # working url:
+        #   https://api.openweathermap.org/data/2.5/onecall?lat=33.441792&lon=-94.037689&exclude=minutely,hourly&appid=897b26a1e9df68982e49636091afbaf4
+        # bad url:
+        #   https://api.openweathermap.org/data/2.5/onecall?appid=897b26a1e9df68982e49636091afbaf4&units=imperial&exclude=minutely,hourly&lat=40.71&lon=-74.01
+        print('[ {} ]'.format(url))
+
+        return ForecastData(data)
+        
+        

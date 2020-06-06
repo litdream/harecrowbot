@@ -3,10 +3,10 @@ import os
 '''
 Simplified Changelog:
 
-    0.1  initial
-    0.2  begin to support :hello
-    0.3  support :weather
-
+    0.1    initial
+    0.2    begin to support :hello
+    0.3    support :weather
+    0.3r1  :weather is refactored and supports daily min/max
 '''
 
 class Version:
@@ -14,7 +14,7 @@ class Version:
         self.ctx = ctx
         self.major = 0
         self.minor = 3
-        self.release = 0
+        self.release = 1
 
     def version(self):
         if self.release == 0:
