@@ -12,6 +12,7 @@ source venv/bin/activate
 pip install discord.py
   - if dependency fails:  pip install wheel, and inda-ssl
   - another dependency:   pip install python-dotenv
+  - test dependency:   pip install pytest
   
 ```
 
