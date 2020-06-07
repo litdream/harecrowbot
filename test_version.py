@@ -6,6 +6,7 @@ def test_version():
     v = bot_version.Version(ctx)
     v.major = 1
     v.minor = 2
+    v.release = 0
     assert( v.version() == 'harecrowbot v1.2' )
 
 def test_version_with_release():

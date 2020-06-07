@@ -7,6 +7,10 @@ load_dotenv( dotenv_path=os.path.join(homedir,".harecrowbot/env") )
 TOKEN = os.getenv('DISCORD_TOKEN')
 OWMID = os.getenv('OPENWM_TOKEN')
 
+# Global instances
+import bot_mobgame
+mobgame = bot_mobgame.Mobgame()
+
 bot = commands.Bot(command_prefix=':')
 
 @bot.event
@@ -31,11 +35,48 @@ async def say_hello(ctx, *args):
     if len(args) == 0:
         rtn = '''\
 USAGE
-:weather (zip code | city name)
+:mob <subcommand>
+
+subcommands:
+   init            initialize game
+   score           print current score
+   hit <mobname>   hit this mob!
+   list            list remaining mob
 '''
     else:
         w = bot_weather.Weather(ctx, OWMID)
         rtn = w.getWeather(*args)
     await ctx.send(rtn)
+
+@bot.command(name="mob", help="mob hunting game")
+async def mob_hunt(ctx, *args):
+    author = ctx.message.author
+    toUser = author.__str__()
+
+    msg = ''
+    try:
+        if len(args) == 0:
+            await ctx.send(mobgame.help())
+        else:
+            cmd = args[0]
+            
+            if cmd == 'init':
+                msg  = mobgame.setup()
+            elif cmd == 'score':
+                msg  = mobgame.score()
+            elif cmd == 'hit':
+                monster = args[1]
+                msg = mobgame.hit(toUser, monster)
+            elif cmd == 'list':
+                msg = mobgame.list()
+            else:
+                msg = 'Unknown command({})'.format(cmd)
+    except IndexError:
+        msg = "'hit' command require mob-name."
+    except Exception as err:
+        # TODO: Organize Exception
+        msg = err.__str__()
+
+    await ctx.send('{}: {}'.format(toUser, msg))
     
 bot.run(TOKEN)    
