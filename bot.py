@@ -41,5 +41,38 @@ USAGE
         w = bot_weather.Weather(ctx, OWMID)
         rtn = w.getWeather(*args)
     await ctx.send(rtn)
+
+@bot.command(name="mob", help="mob hunting game")
+async def mob_hunt(ctx, *args):
+    author = ctx.message.author
+    toUser = author.__str__()
+
+    msg = ''
+    try:
+        if len(args) == 0:
+            await ctx.send(mobgame.help())
+        else:
+            cmd = args[0]
+            
+            if cmd == 'init':
+                #msg = 'Mobgame is already in Progress.'
+                msg  = mobgame.newGame()
+            elif cmd == 'score':
+                pass
+            elif cmd == 'hit':
+                #msg = 'Mobgame is not initialized, yet'
+                monster = args[1]
+                msg = mobgame.hit(toUser, monster)
+            elif cmd == 'list':
+                pass
+            else:
+                msg = 'Unknown command({})'.format(cmd)
+    except IndexError:
+        msg = "'hit' command require mob-name."
+    except:
+        # TODO: Organize Exception
+        pass
+
+    await ctx.send('{}: {}'.format(toUser, msg))
     
 bot.run(TOKEN)    

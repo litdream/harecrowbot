@@ -35,6 +35,18 @@ class Mobgame:
         self.startAt = 0
         self.expireAt = 0
 
+    def help(self):
+        return '''\
+USAGE
+:mob <subcommand> 
+
+subcommands:
+  - init            : initialize a new game
+  - score           : print current scoreboard
+  - hit <mobname>   : fight with mob.
+  - list            : list current mobs
+'''
+    
     def reset(self):
         self.state = GameState.STOPPED
         self.scoreboard = dict()
@@ -58,6 +70,11 @@ class Mobgame:
         
     def expired(self):
         now = time.time()
-        return now > self.expireAt
+        if now > self.expireAt:
+            self.state = GameState.STOPPED
+            return True
+        else:
+            return False
+            
     
         
