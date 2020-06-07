@@ -1,10 +1,14 @@
 import os
 import time
 from enum import Enum
-from random import shuffle 
+from random import shuffle
+import threading
 
 '''
 Simple statemachine for mobgame.
+
+Unlike simple methods, Mobgame will raise Exceptions.
+Handle exception in the 'bot.py' command entry.
 
 '''
 class GameState(Enum):
@@ -18,6 +22,13 @@ SEC_EXPIRE_DURATION = 3 * 60    # 3 minutes
 MobPopulation = ['zombie', 'dwarf', 'brute', 'ettin', 'frog', 'earthworm', 'rabbit', 'buffalo', 'gnome', 'kraken' ]
 BossPopulation = ['amphisbaena', 'canocephalus', 'mermicolion']
 
+def synchronized(func):
+    func.__lock__ = threading.Lock()
+    def synced_func(*args, **kws):
+        with func.__lock__:
+            return func(*args, **kws)
+    return synced_func
+
 class Mobgame:
     def __init__(self):
         self.reset()
@@ -29,18 +40,22 @@ class Mobgame:
         self.scoreboard = dict()
         self.mobs = []
         self.boss = []
-    
-    def setup(self):
-        self.startAt = time.time()
-        self.expireAt = time.time() + SEC_EXPIRE_DURATION
         
-        self.state = GameState.RUNNING
-        shuffle(MobPopulation)
-        shuffle(BossPopulation)
+    @synchronized
+    def setup(self):
+        if self.expired():
+            self.startAt = time.time()
+            self.expireAt = time.time() + SEC_EXPIRE_DURATION
 
-        self.mobs = MobPopulation[:9]
-        self.boss.append(BossPopulation[0])
+            self.state = GameState.RUNNING
+            shuffle(MobPopulation)
+            shuffle(BossPopulation)
 
+            self.mobs = MobPopulation[:9]
+            self.boss.append(BossPopulation[0])
+        else:
+            raise Exception("Game is still in progress.")
+        
     def expired(self):
         now = time.time()
         return now > self.expireAt
