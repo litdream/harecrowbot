@@ -7,6 +7,10 @@ load_dotenv( dotenv_path=os.path.join(homedir,".harecrowbot/env") )
 TOKEN = os.getenv('DISCORD_TOKEN')
 OWMID = os.getenv('OPENWM_TOKEN')
 
+# Global instances
+import bot_mobgame
+mobgame = bot_mobgame.Mobgame()
+
 bot = commands.Bot(command_prefix=':')
 
 @bot.event
