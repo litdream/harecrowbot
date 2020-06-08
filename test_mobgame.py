@@ -30,13 +30,16 @@ def test_gameinit(resource_gamestate):
     assert( not game.expired())
     assert(game.state == GameState.RUNNING)
 
+    lst = game.mobs
     try:
         game.setup()
         assert(False)
     except Exception as err:
         errstr = err.__str__()
         assert( errstr == 'Game is still in progress.')
+    assert(lst == game.mobs)
     
+        
 def test_expired_init(resource_gamestate):
     game = resource_gamestate
 

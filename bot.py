@@ -42,7 +42,7 @@ USAGE
         rtn = w.getWeather(*args)
     await ctx.send(rtn)
 
-@bot.command(name="mobhunt", help="mob hunting game")
+@bot.command(name="mox", help="mob hunting game")
 async def mob_hunt(ctx, *args):
     author = ctx.message.author
     toUser = author.__str__()

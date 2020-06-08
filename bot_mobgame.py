@@ -40,7 +40,7 @@ class Mobgame:
     def help(self):
         return '''\
 USAGE
-:mob <subcommand> 
+:mox <subcommand> 
 
 subcommands:
   - init            : initialize a new game
