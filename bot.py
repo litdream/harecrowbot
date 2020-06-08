@@ -55,12 +55,10 @@ async def mob_hunt(ctx, *args):
             cmd = args[0]
             
             if cmd == 'init':
-                #msg = 'Mobgame is already in Progress.'
-                msg  = mobgame.newGame()
+                msg  = mobgame.setup()
             elif cmd == 'score':
-                pass
+                msg  = mobgame.score()
             elif cmd == 'hit':
-                #msg = 'Mobgame is not initialized, yet'
                 monster = args[1]
                 msg = mobgame.hit(toUser, monster)
             elif cmd == 'list':
@@ -69,9 +67,9 @@ async def mob_hunt(ctx, *args):
                 msg = 'Unknown command({})'.format(cmd)
     except IndexError:
         msg = "'hit' command require mob-name."
-    except:
+    except Exception as err:
         # TODO: Organize Exception
-        pass
+        msg = err.__str__()
 
     await ctx.send('{}: {}'.format(toUser, msg))
     

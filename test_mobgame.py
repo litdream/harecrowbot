@@ -48,6 +48,21 @@ def test_expired_init(resource_gamestate):
     game.expireAt = now + duration//2
     assert( not game.expired())
 
+
+def test_scoreboard(resource_gamestate):
+    game = resource_gamestate
+    game.setup()
+
+    assert( game.score() == '')
+    game.scoreboard['john'] = ['ant','fly']
+    assert( game.score() == "(2) john: ['ant', 'fly']" )
+
+    game.scoreboard['do'] = ['guitar','pick','amp']
+    assert( game.score() == '''\
+(3) do: ['guitar', 'pick', 'amp']
+(2) john: ['ant', 'fly']''')
+
+    
 def test_hit_mob(resource_gamestate):
     game = resource_gamestate
     

@@ -55,6 +55,7 @@ subcommands:
         
     @synchronized
     def setup(self):
+        self.expired()
         if self.state != GameState.RUNNING:
             self.startAt = time.time()
             self.expireAt = time.time() + SEC_EXPIRE_DURATION
@@ -75,8 +76,50 @@ subcommands:
             return True
         else:
             return False
-            
+
+    def score(self):
+        self.expired()
+        sortScore = dict()
+        for k in self.scoreboard.keys():
+            l = len(self.scoreboard[k])
+            if l not in sortScore:
+                sortScore[l] = list()
+            sortScore[l].append(k)
+
+        lst = []
+        for k in reversed(sorted(sortScore.keys())):
+            for user in sortScore[k]:
+                lst.append("({}) {}: {}".format(k, user, str(self.scoreboard[user])) )
+        return '\n'.join(lst)
+
+    
     @synchronized
     def hit(self, user, mobname):
-        pass
-        
+        self.expired()
+        if self.state == GameState.RUNNING:
+            rtn = ''
+            if mobname in self.mobs:
+                self.mobs.remove(mobname)
+                if user not in self.scoreboard:
+                    self.scoreboard[user] = list()
+                self.scoreboard[user].append(mobname)
+                rtn = "SUCCESS! ({})".format(mobname)
+            elif mobname in self.boss:
+                self.boss.remove(mobname)
+                if user not in self.scoreboard:
+                    self.scoreboard[user] = list()
+                self.scoreboard[user].append(mobname)
+                rtn = "SUCCESS! ({})".format(mobname)
+            else:
+                rtn = "No such mob({})".format(mobname)
+
+            if len(self.mobs) + len(self.boss) == 0:
+                rtn += "\n\nGame Finished.\n"
+                rtn += self.scoreboard()
+                self.state = GameState.STOPPED
+                self.expireAt = time.time()
+            return rtn
+        else:
+            raise Exception("Game is not in progress.  Initialize game first.")
+
+    
