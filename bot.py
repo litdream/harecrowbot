@@ -35,20 +35,14 @@ async def say_hello(ctx, *args):
     if len(args) == 0:
         rtn = '''\
 USAGE
-:mob <subcommand>
-
-subcommands:
-   init            initialize game
-   score           print current score
-   hit <mobname>   hit this mob!
-   list            list remaining mob
+:weather (zip code | city name) 
 '''
     else:
         w = bot_weather.Weather(ctx, OWMID)
         rtn = w.getWeather(*args)
     await ctx.send(rtn)
 
-@bot.command(name="mob", help="mob hunting game")
+@bot.command(name="mobhunt", help="mob hunting game")
 async def mob_hunt(ctx, *args):
     author = ctx.message.author
     toUser = author.__str__()
