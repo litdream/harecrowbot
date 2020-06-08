@@ -55,7 +55,7 @@ subcommands:
         
     @synchronized
     def setup(self):
-        if self.expired():
+        if self.state != GameState.RUNNING:
             self.startAt = time.time()
             self.expireAt = time.time() + SEC_EXPIRE_DURATION
 
@@ -63,7 +63,7 @@ subcommands:
             shuffle(MobPopulation)
             shuffle(BossPopulation)
 
-            self.mobs = MobPopulation[:9]
+            self.mobs = MobPopulation[:7]
             self.boss.append(BossPopulation[0])
         else:
             raise Exception("Game is still in progress.")
@@ -71,10 +71,12 @@ subcommands:
     def expired(self):
         now = time.time()
         if now > self.expireAt:
-            self.state = GameState.STOPPED
+            self.state = GameState.EXPIRED
             return True
         else:
             return False
             
-    
+    @synchronized
+    def hit(self, user, mobname):
+        pass
         
