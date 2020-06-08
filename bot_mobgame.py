@@ -17,6 +17,8 @@ class GameState(Enum):
     EXPIRED = 3
 
 SEC_EXPIRE_DURATION = 3 * 60    # 3 minutes
+TOTAL_MOBS = 9
+TOTAL_BOSS = 1
 
 # To be adjusted: Jake is working on it.
 MobPopulation = ['zombie', 'dwarf', 'brute', 'ettin', 'frog', 'earthworm', 'rabbit', 'buffalo', 'gnome', 'kraken' ]
@@ -64,8 +66,8 @@ subcommands:
             shuffle(MobPopulation)
             shuffle(BossPopulation)
 
-            self.mobs = MobPopulation[:7]
-            self.boss.append(BossPopulation[0])
+            self.mobs = MobPopulation[:TOTAL_MOBS]
+            self.boss.append(BossPopulation[TOTAL_BOSS])
         else:
             raise Exception("Game is still in progress.")
         
@@ -98,28 +100,38 @@ subcommands:
         self.expired()
         if self.state == GameState.RUNNING:
             rtn = ''
+
+            # Currently, mobs and boss are the same.
+            #  TODO: Later, split and add more points and dramatic text to BOSS.
+            #
             if mobname in self.mobs:
                 self.mobs.remove(mobname)
                 if user not in self.scoreboard:
                     self.scoreboard[user] = list()
                 self.scoreboard[user].append(mobname)
-                rtn = "SUCCESS! ({})".format(mobname)
+                rtn = "SUCCESS! ( {} )".format(mobname)
             elif mobname in self.boss:
                 self.boss.remove(mobname)
                 if user not in self.scoreboard:
                     self.scoreboard[user] = list()
                 self.scoreboard[user].append(mobname)
-                rtn = "SUCCESS! ({})".format(mobname)
+                rtn = "SUCCESS! ( {} )".format(mobname)
             else:
-                rtn = "No such mob({})".format(mobname)
+                rtn = "No such mob( {} )".format(mobname)
 
             if len(self.mobs) + len(self.boss) == 0:
                 rtn += "\n\nGame Finished.\n"
-                rtn += self.scoreboard()
+                rtn += self.score()
                 self.state = GameState.STOPPED
                 self.expireAt = time.time()
             return rtn
         else:
             raise Exception("Game is not in progress.  Initialize game first.")
 
-    
+    def list(self):
+        self.expired()
+        if self.state == GameState.RUNNING:
+            lst = self.boss + self.mobs
+            return "[ {} ]".format(' '.join(lst))
+        else:
+            return "No mob: Please start game."

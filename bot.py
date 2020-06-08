@@ -35,7 +35,13 @@ async def say_hello(ctx, *args):
     if len(args) == 0:
         rtn = '''\
 USAGE
-:weather (zip code | city name)
+:mob <subcommand>
+
+subcommands:
+   init            initialize game
+   score           print current score
+   hit <mobname>   hit this mob!
+   list            list remaining mob
 '''
     else:
         w = bot_weather.Weather(ctx, OWMID)
@@ -62,7 +68,7 @@ async def mob_hunt(ctx, *args):
                 monster = args[1]
                 msg = mobgame.hit(toUser, monster)
             elif cmd == 'list':
-                pass
+                msg = mobgame.list()
             else:
                 msg = 'Unknown command({})'.format(cmd)
     except IndexError:
