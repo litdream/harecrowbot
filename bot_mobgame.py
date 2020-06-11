@@ -68,6 +68,8 @@ subcommands:
 
             self.mobs = MobPopulation[:TOTAL_MOBS]
             self.boss.append(BossPopulation[TOTAL_BOSS])
+            return self.list()
+            
         else:
             raise Exception("Game is still in progress.")
         
