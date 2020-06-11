@@ -17,7 +17,7 @@ class GameState(Enum):
     EXPIRED = 3
 
 SEC_EXPIRE_DURATION = 3 * 60    # 3 minutes
-TOTAL_MOBS = 9
+TOTAL_MOBS = 7
 TOTAL_BOSS = 1
 
 # To be adjusted: Jake is working on it.

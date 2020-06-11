@@ -3,6 +3,7 @@ import time
 import copy
 from bot_mobgame import GameState, Mobgame
 from bot_mobgame import SEC_EXPIRE_DURATION as duration
+from bot_mobgame import TOTAL_MOBS
 
 @pytest.fixture
 def resource_gamestate(request):
@@ -38,7 +39,21 @@ def test_gameinit(resource_gamestate):
         errstr = err.__str__()
         assert( errstr == 'Game is still in progress.')
     assert(lst == game.mobs)
-    
+
+def test_gameinit_2(resource_gamestate):
+    game = resource_gamestate
+    game.setup()
+    assert( len(game.mobs) == TOTAL_MOBS)
+    game.hit('rchung', game.mobs[0])
+    assert( len(game.mobs) == TOTAL_MOBS - 1)
+
+    try:
+        game.setup() 
+        assert(False)
+    except Exception as err:
+        errstr = err.__str__()
+        assert( errstr == 'Game is still in progress.')
+    assert( len(game.mobs) == TOTAL_MOBS -1)
         
 def test_expired_init(resource_gamestate):
     game = resource_gamestate
