@@ -72,5 +72,12 @@ async def mob_hunt(ctx, *args):
         msg = err.__str__()
 
     await ctx.send('{}: {}'.format(toUser, msg))
+
+@bot.command(name="laugh", help="I will laugh")
+async def laugh(ctx, *args):
+    import bot_laugh
+    l = bot_laugh.Laugh(ctx)
+    msg = l.laugh()
+    await ctx.send(msg)
     
 bot.run(TOKEN)    

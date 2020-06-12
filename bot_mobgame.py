@@ -62,6 +62,7 @@ monster:
     @synchronized
     def setup(self):
         self.expired()
+        self.reset()
         if self.state != GameState.RUNNING:
             self.startAt = time.time()
             self.expireAt = time.time() + SEC_EXPIRE_DURATION
