@@ -21,7 +21,7 @@ TOTAL_MOBS = 7
 TOTAL_BOSS = 1
 
 # To be adjusted: Jake is working on it.
-MobPopulation = ['zombie', 'dwarf', 'brute', 'ettin', 'frog', 'earthworm', 'rabbit', 'buffalo', 'gnome', 'kraken' ]
+MobPopulation = ['zombie', 'hunter', 'brute', 'ettin', 'tank', 'mercenary', 'hacker', 'bulette', 'displacer', 'strider' ]
 BossPopulation = ['amphisbaena', 'canocephalus', 'mermicolion']
 
 def synchronized(func):
@@ -40,13 +40,17 @@ class Mobgame:
     def help(self):
         return '''\
 USAGE
-:mox <subcommand> 
+;mox <subcommand or monster> 
 
 subcommands:
   - init            : initialize a new game
   - score           : print current scoreboard
-  - hit <mobname>   : fight with mob.
   - list            : list current mobs
+
+monster:
+  - will hit the monster
+    e.g.  ";mox zombie" will hit zombie.
+
 '''
     
     def reset(self):

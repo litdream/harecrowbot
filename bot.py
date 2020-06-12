@@ -11,7 +11,7 @@ OWMID = os.getenv('OPENWM_TOKEN')
 import bot_mobgame
 mobgame = bot_mobgame.Mobgame()
 
-bot = commands.Bot(command_prefix=':')
+bot = commands.Bot(command_prefix=';')
 
 @bot.event
 async def on_ready():
@@ -58,13 +58,13 @@ async def mob_hunt(ctx, *args):
                 msg  = mobgame.setup()
             elif cmd == 'score':
                 msg  = mobgame.score()
-            elif cmd == 'hit':
-                monster = args[1]
-                msg = mobgame.hit(toUser, monster)
             elif cmd == 'list':
                 msg = mobgame.list()
             else:
-                msg = 'Unknown command({})'.format(cmd)
+                # if not above, it's a hit command with monster
+                monster = args[0]
+                msg = mobgame.hit(toUser, monster)
+
     except IndexError:
         msg = "'hit' command require mob-name."
     except Exception as err:
