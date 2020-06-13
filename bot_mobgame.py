@@ -38,6 +38,7 @@ class Mobgame:
         self.expireAt = 0
 
     def help(self):
+        self.expired()
         return '''\
 USAGE
 ;mox <subcommand or monster> 
@@ -63,20 +64,21 @@ monster:
     def setup(self):
         self.expired()
         self.reset()
-        if self.state != GameState.RUNNING:
-            self.startAt = time.time()
-            self.expireAt = time.time() + SEC_EXPIRE_DURATION
-
-            self.state = GameState.RUNNING
-            shuffle(MobPopulation)
-            shuffle(BossPopulation)
-
-            self.mobs = MobPopulation[:TOTAL_MOBS]
-            self.boss.append(BossPopulation[TOTAL_BOSS])
-            return self.list()
-            
-        else:
+        if self.state == GameState.RUNNING:
             raise Exception("Game is still in progress.")
+
+        # SET UP
+        self.startAt = time.time()
+        self.expireAt = time.time() + SEC_EXPIRE_DURATION
+
+        self.state = GameState.RUNNING
+        shuffle(MobPopulation)
+        shuffle(BossPopulation)
+
+        self.mobs = MobPopulation[:TOTAL_MOBS]
+        self.boss.append(BossPopulation[TOTAL_BOSS])
+        return self.list()
+            
         
     def expired(self):
         now = time.time()

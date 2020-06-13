@@ -1,4 +1,6 @@
 import os
+import re
+import time
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -11,6 +13,11 @@ OWMID = os.getenv('OPENWM_TOKEN')
 import bot_mobgame
 mobgame = bot_mobgame.Mobgame()
 
+import bot_numguess
+numgame = bot_numguess.Numgame()
+patnum = re.compile('^[0-9]{3}$')
+
+# Main Bot object: bot
 bot = commands.Bot(command_prefix=';')
 
 @bot.event
@@ -50,7 +57,7 @@ async def mob_hunt(ctx, *args):
     msg = ''
     try:
         if len(args) == 0:
-            await ctx.send(mobgame.help())
+            msg = mobgame.help()
         else:
             cmd = args[0]
             
@@ -79,5 +86,35 @@ async def laugh(ctx, *args):
     l = bot_laugh.Laugh(ctx)
     msg = l.laugh()
     await ctx.send(msg)
+
+@bot.command(name="num", help="Number Guessing Game")
+async def numguess(ctx, *args):
+    author = ctx.message.author
+    toUser = author.__str__()
+
+    msg = ''
+    try:
+        if len(args) == 0:
+            msg = numgame.help()
+        else:
+            cmd = args[0]
+
+            if cmd == 'init':
+                msg = numgame.setup()
+            elif cmd == 'status':
+                msg = numgame.status()
+            elif patnum.match(cmd):
+                strikes, msg = numgame.match(toUser, cmd)
+                if strike == 3:
+                    numgame.expireAt = time.time() -1
+                    msg = "YOU WON!! It was " + cmd + "."
+            else:
+                msg = "Unknown command({})".format(cmd)
+                
+    except Exception as err:
+        # TODO: Organize Exception
+        msg = err.__str__()
+    await ctx.send('{}: {}'.format(toUser, msg))
+    
     
 bot.run(TOKEN)    
