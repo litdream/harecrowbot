@@ -48,7 +48,8 @@ REMEMBER:  You have total of 7 chances!  Guess based on clues you collect.
         self.state = GameState.RUNNING
         self.startAt = time.time()
         self.expireAt = self.startAt + MAX_GAME_DURATION
-        
+        return "Okay, I have a 3 digit number. Guess it!"
+    
     def expired(self):
         now = time.time()
         if now > self.expireAt:

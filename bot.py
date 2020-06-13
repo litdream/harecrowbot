@@ -104,8 +104,8 @@ async def numguess(ctx, *args):
             elif cmd == 'status':
                 msg = numgame.status()
             elif patnum.match(cmd):
-                strikes, msg = numgame.match(toUser, cmd)
-                if strike == 3:
+                nStrike, msg = numgame.match(toUser, cmd)
+                if nStrike == 3:
                     numgame.expireAt = time.time() -1
                     msg = "YOU WON!! It was " + cmd + "."
             else:
