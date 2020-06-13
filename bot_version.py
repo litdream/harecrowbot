@@ -11,13 +11,15 @@ Simplified Changelog:
     0.4r1  ;mob is reserved.  Change to ;mox.  And, duplicate init bugfix.
     0.4r2  ;mob interface change, and command prefix changed from ':' to ';' 
     0.5    ;laugh support
+    0.6    ;num game support.
+
 '''
 
 class Version:
     def __init__(self, ctx):
         self.ctx = ctx
         self.major = 0
-        self.minor = 5
+        self.minor = 6
         self.release = 0
 
     def version(self):
