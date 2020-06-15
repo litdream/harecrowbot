@@ -33,7 +33,7 @@ def test_gameinit(resource_gamestate):
 
     lst = game.mobs
     try:
-        game.setup()
+        game.setup()     # This should fail.
         assert(False)
     except Exception as err:
         errstr = err.__str__()
