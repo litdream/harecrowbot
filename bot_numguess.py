@@ -6,6 +6,7 @@ from bot_mobgame import GameState, synchronized
 
 
 MAX_GAME_DURATION = 60 * 5    # 5 minutes
+MAX_CHANCE = 5
 
 class Numgame:
     def __init__(self):
@@ -28,9 +29,10 @@ guess-number:
   - 3 digit of your number to match
     e.g. ";num 321"
 
-REMEMBER:  You have total of 7 chances!  Guess based on clues you collect.
+REMEMBER:  You have total of {} chances!  Guess based on clues you collect.
 
-'''
+'''.format(MAX_CHANCE)
+    
     
     def reset(self):
         self.state = GameState.STOPPED
@@ -73,11 +75,22 @@ REMEMBER:  You have total of 7 chances!  Guess based on clues you collect.
             
         if len( set(uNum)) < 3:
             raise Exception("No repeating digit, please.  Each digit should be unique.")
+        if uNum == self.num:
+            return 3, "{}(0b 3s)".format(uNum)
 
         if toUser not in self.uHistory:
             self.uHistory[toUser] = list()
-        if len( self.uHistory[toUser] ) >= 7:
-            raise Exception("You ran out of all 7 chances.")
+        if len( self.uHistory[toUser] ) >= MAX_CHANCE:
+            tot_chances = len(self.uHistory) * MAX_CHANCE
+            cur_chances = 0
+            for k,v in self.uHistory.items():
+                cur_chances += len(v)
+
+            if cur_chances >= tot_chances:
+                self.expireAt = time.time()
+                self.state = GameState.STOPPED
+                raise Exception("HaHaHa! I won!! You all ran out of chances.  My number was {}.".format(self.num))
+            raise Exception("You ran out of all {} chances.".format(MAX_CHANCE))
             
         strike = 0
         for i in (0,1,2):
@@ -96,5 +109,3 @@ REMEMBER:  You have total of 7 chances!  Guess based on clues you collect.
         self.uHistory[toUser].append(elm)
         
         return strike, elm
-        
-    

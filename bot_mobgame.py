@@ -63,11 +63,11 @@ monster:
     @synchronized
     def setup(self):
         self.expired()
-        self.reset()
         if self.state == GameState.RUNNING:
             raise Exception("Game is still in progress.")
 
         # SET UP
+        self.reset()
         self.startAt = time.time()
         self.expireAt = time.time() + SEC_EXPIRE_DURATION
 
