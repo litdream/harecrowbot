@@ -112,5 +112,5 @@ REMEMBER:  You have total of {} chances!  Guess based on clues you collect.
             raise Exception("HaHaHa! I won!! You all ran out of chances.  My number was {}.".format(self.num))
 
         # Finally, check if this person ran out of chance.
-        msg = "  : {} chances left.".format( MAX_CHANCE - len(self.uHistory[toUser]))
+        msg = elm + "  : {} chances left.".format( MAX_CHANCE - len(self.uHistory[toUser]))
         return strike, msg

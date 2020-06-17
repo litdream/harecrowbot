@@ -22,19 +22,19 @@ def test_match(resource_gamestate):
     
     s, m = game.match('jaron', '345')
     assert( s == 0 )
-    assert( m == '345(1b 0s)')
+    assert( m.startswith('345(1b 0s)'))
     assert( game.status() == 'jaron: 345(1b 0s)' )
 
     s, m = game.match('jake', '124')
     assert( s == 2 )
-    assert( m == '124(0b 2s)')
+    assert( m.startswith('124(0b 2s)'))
     assert( game.status() == '''\
 jaron: 345(1b 0s)
 jake: 124(0b 2s)''')
     
     s, m = game.match('jake', '123')
     assert( s == 3 )
-    assert( m == '123(0b 3s)')
+    assert( m.startswith('123(0b 3s)'))
 
 def test_all_finished(resource_gamestate):
     game= resource_gamestate
@@ -48,7 +48,7 @@ def test_all_finished(resource_gamestate):
     for i in range(1, MAX_CHANCE):
         s,m = game.match('jake', '123')
     assert(s == 0)
-    assert(m == '123(0b 0s)')
+    assert(m.startswith('123(0b 0s)'))
 
     try:
         s,m = game.match('jake', '123')
@@ -63,7 +63,7 @@ def test_all_finished(resource_gamestate):
     for i in range(1, MAX_CHANCE-1):
         s,m = game.match('jaron', '123')
     assert(s == 0)
-    assert(m == '123(0b 0s)')
+    assert(m.startswith('123(0b 0s)'))
     
     try:
         s,m = game.match('jaron', '123')
@@ -80,8 +80,8 @@ def test_final_chance(resource_gamestate):
     for i in range(1, MAX_CHANCE):
         s,m = game.match('jake', '123')
     assert(s == 0)
-    assert(m == '123(0b 0s)')
+    assert(m.startswith('123(0b 0s)'))
     
     s,m = game.match('jake', '456')
     assert(s == 3)
-    assert(m == '456(0b 3s)')
+    assert(m.startswith('456(0b 3s)'))
