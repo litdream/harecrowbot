@@ -43,6 +43,8 @@ def test_all_finished(resource_gamestate):
     # u1 and u2
     s,m = game.match('jake', '123')
     s,m = game.match('jaron','123')
+
+    # u1 will run out of chance first.
     for i in range(1, MAX_CHANCE):
         s,m = game.match('jake', '123')
     assert(s == 0)
@@ -58,7 +60,7 @@ def test_all_finished(resource_gamestate):
 
     # Now, u2 runs out of chances, which makes
     #   entier contestants run out of chance.
-    for i in range(1, MAX_CHANCE):
+    for i in range(1, MAX_CHANCE-1):
         s,m = game.match('jaron', '123')
     assert(s == 0)
     assert(m == '123(0b 0s)')
