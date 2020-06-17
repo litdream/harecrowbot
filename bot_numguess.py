@@ -113,4 +113,4 @@ REMEMBER:  You have total of {} chances!  Guess based on clues you collect.
 
         # Finally, check if this person ran out of chance.
         msg = "  : {} chances left.".format( MAX_CHANCE - len(self.uHistory[toUser]))
-        return strike, elm
+        return strike, msg
