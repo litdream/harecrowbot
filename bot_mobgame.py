@@ -21,8 +21,10 @@ TOTAL_MOBS = 7
 TOTAL_BOSS = 1
 
 # To be adjusted: Jake is working on it.
-MobPopulation = ['zombie', 'hunter', 'brute', 'ettin', 'tank', 'mercenary', 'hacker', 'bulette', 'displacer', 'strider' ]
-BossPopulation = ['amphisbaena', 'canocephalus', 'mermicolion']
+MobPopulation = ['zombie', 'hunter', 'brute', 'ettin', 'tank', 'mercenary', 'hacker', 'bulette', 'displacer',
+                 'strider', 'kumonga', 'sniper', 'metalpest']
+
+BossPopulation = ['amphisbaena', 'canocephalus', 'mermicolion', 'destoroyah', ]
 
 def synchronized(func):
     func.__lock__ = threading.Lock()
@@ -44,14 +46,21 @@ USAGE
 ;mox <subcommand or monster> 
 
 subcommands:
-  - init            : initialize a new game
-  - score           : print current scoreboard
-  - list            : list current mobs
+  - init            : Start a new game.
+  - score           : Show everyone's current scores.
+  - list            : List the current mobs that are still alive.
 
 monster:
-  - will hit the monster
-    e.g.  ";mox zombie" will hit zombie.
+  - Battles the said monster.
+    e.g.  ";mox zombie" will fight the zombie.
 
+RULES:
+  When you initiate a game, a set of words will show up,
+  with some being harder than the others.
+  Type all the words successfully to win the game.
+  When playing with more than 2 people,
+  you can work together to finish the game,
+  or compete against each other for the most points.
 '''
     
     def reset(self):

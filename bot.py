@@ -87,6 +87,14 @@ async def laugh(ctx, *args):
     msg = l.laugh()
     await ctx.send(msg)
 
+@bot.command(name="explode", help="initiates a self-destruction sequence")
+async def explode(ctx, *args):
+    import bot_explode
+    e = bot_explode.Explode(ctx)
+    msg = e.explode()
+    await ctx.send(msg)
+    
+
 @bot.command(name="num", help="Number Guessing Game")
 async def numguess(ctx, *args):
     author = ctx.message.author
@@ -103,6 +111,8 @@ async def numguess(ctx, *args):
                 msg = numgame.setup()
             elif cmd == 'status':
                 msg = numgame.status()
+            elif cmd == 'help':
+                msg = numgame.help()
             elif patnum.match(cmd):
                 nStrike, msg = numgame.match(toUser, cmd)
                 if nStrike == 3:
